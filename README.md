@@ -1,20 +1,17 @@
-#############################################
-🔐 Core Features of Spring Security:
-##############################################
-1. Authentication: Verifies who you are (e.g., username & password, JWT etc.).
 
-2. Authorization: Determines what you are allowed to do (e.g., access control for URLs, methods, etc.).
+# Spring Security Core Features & Implementation Guide 
 
-3. Protection Against Common Security Threats
+## 🔐 Core Features 
+1. **Authentication**: Verifies identity (e.g., username/password, JWT).  
+2. **Authorization**: Controls access (e.g., URL/method permissions).  
+3. **Protection Against Common Security Threats**:  
 
-a. CSRF (Cross-Site Request Forgery)
---------------------------------------
-1. 🛡 CSRF (Cross-Site Request Forgery)
-What it is:
+### 1. 🛡 CSRF (Cross-Site Request Forgery) 
+**What it is**:  
 An attacker tricks a logged-in user into unknowingly sending a request (like transferring money or changing a password) to your application.
 
 Example:
-
+```html
 -> You're logged into yourbank.com.
 -> An attacker sends you a malicious link:
 -> <img src="https://yourbank.com/transfer?to=attacker&amount=1000" />
@@ -23,10 +20,10 @@ Example:
 -> Automatically adds a CSRF token to every form and expects it in requests. 
 -> In a web application that uses Spring Security, the CSRF token is automatically added as a hidden input field inside HTML forms.
 -> Blocks requests without valid tokens.
+```
 
 
-
-2. 🔒 Session Fixation
+### 2. 🔒 Session Fixation
 ------------------------------------
 What it is:
 An attacker sets a known session ID for a user, then waits for the user to log in. If successful, the attacker reuses the same session.
@@ -41,14 +38,14 @@ Example:
 To Enable we do this: http.sessionManagement().sessionFixation().migrateSession();  // default behavior
 
 
-3. Clickjacking
+### 3. Clickjacking
 
 -> Here's a simplified explanation of the Clickjacking attack:
 -> Attacker's Page: The attacker creates a webpage that hides a legitimate banking website inside an invisible iframe (like a hidden box).
 -> User's Interaction: The user thinks they are clicking on a button (e.g., "Play Video" or "Download File") on the attacker’s page.
 -> What Happens: In reality, the user is actually clicking on the invisible iframe that contains the banking page. They might unintentionally trigger actions on the banking site, like transferring money or changing their account settings.
 
-4. Brute-Force Attack Example
+### 4. Brute-Force Attack Example
 -> What It Is: A Brute-Force Attack is when an attacker attempts to guess the correct credentials (like a password) by trying many possible combinations until they find the correct one.
 
 Example:
@@ -95,7 +92,7 @@ Encourage users to use strong, unique passwords (e.g., a combination of uppercas
 
 Example 1:
 ---------------
-
+```java
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -116,10 +113,10 @@ public class WelcomeController {
 	}
 
 }
-
+```
 SecuirtyConfigFile - to Permit All request
 ------------------------------------------
-
+```java
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -142,14 +139,11 @@ public class AppSecurityConfig {
 		
 	}
 }
-
+```
 
 Example 2:
 -----------
-
-Example 1:
----------------
-
+```java
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -170,10 +164,10 @@ public class WelcomeController {
 	}
 
 }
-
+```
 SecuirtyConfigFile - to Permit All request
 ------------------------------------------
-
+```java
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -198,11 +192,12 @@ public class AppSecurityConfig {
 	}
 
 }
-
+```
 Example 3: Create User Registration Implementation
 -----------------------------------------------------
 Step 1: Create Entity Class with Name User.java
 -------------------------------------------------
+```java
 package com.authservice.entity;
 
 import jakarta.persistence.*;
@@ -268,13 +263,12 @@ public class User {
 	}
 	
 	
-	
-
 }
-
+```
 ---------------------------------------------------------------------------------------------------------------
 Step 2: Create Repository - UserRepository.java
 ----------------------------------------------------------------------------------------------------------------
+```java
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.authservice.entity.User;
@@ -287,10 +281,11 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	boolean existsByUsername(String username);
 	boolean existsByEmail(String email);
 }
-
+```
 ------------------------------------------------------------------------------------------------------------------
 Step 3: Create UserDto.java
 ------------------------------------------------------------------------------------------------------------------
+```java
 public class UserDto {
 	
 	private long id;
@@ -344,9 +339,11 @@ public class UserDto {
 	}
 
 }
+```
 -------------------------------------------------------------------------------------------------------------------------
 Step 4: Create APIResponse class to send common response for API response, which will make front end integration common
 -------------------------------------------------------------------------------------------------------------------------
+```java
 public class APIResponse<T> {
 	
 	private String message;
@@ -372,14 +369,13 @@ public class APIResponse<T> {
 		this.data = data;
 	}
 	
-	
-	
-	
 
 }
+```
 --------------------------------------------------------------------------------------------
 Step 5 - Create AuthService - Implement Logic for creating user
 ---------------------------------------------------------------------------------------------
+```java
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -435,9 +431,11 @@ public class AuthService {
 	}
 
 }
+```
 -------------------------------------------------------------------------------------------------
 Step 6: Disable csrf in config file to access api end point from different client like postman/swagger
 -----------------------------------------------------------------------------------------------------
+```java
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -478,14 +476,17 @@ public class AppSecurityConfig {
 }
 
 }
+```
 ------------------------------------------------------------------------------------------------------
 Step 7: Add Swagger dependency for generating API documentation
 ------------------------------------------------------------------------------------------------------
+```java
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
     <version>2.5.0</version>
 </dependency>
+```
 
 To Access Swagger - Run the Project
 
@@ -494,14 +495,16 @@ http://localhost:8080/swagger-ui.html
 Or (sometimes):
 
 http://localhost:8080/swagger-ui/index.html
+
 -----------------------------------------------------------------------------------------------------------------------------
 
 ###############################################
-Implementing Login Module
+### Implementing Login Module
 ################################################
 
 LoginDto.java
 ------------------
+```java
 public class LoginDto {
 	
 	private String username;
@@ -521,13 +524,13 @@ public class LoginDto {
 	}
 	
 	
-
 }
+```
 ------------------------------------------------------------
 
 AuthController.java
 -----------------------
-
+```java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -593,11 +596,12 @@ public class AuthController {
 	 }
 
 }
-
+```
 --------------------------------------------------------------
 
 CustomerUserDetailsService.java
 -----------------------------------------
+```java
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -623,11 +627,12 @@ public class CustomerUserDetailsService implements UserDetailsService{
 	}
 
 }
-
+```
 --------------------------------------------------------------------------------
 
 AppSecurityConfig.java
 -----------------------
+```java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -699,16 +704,17 @@ public class AppSecurityConfig {
 
 
 }
+```
 -----------------------------------------------------------------------------
 
 
-#################################################################################
-How to perform Authorization - Role Based Access in your project
-#################################################################################
+##################################################################
+### How to perform Authorization - Role Based Access in your project
+##################################################################
 
 Modify UserDto.java
 --------------------
-
+```java
 package com.authservice.dto;
 
 
@@ -775,9 +781,11 @@ public class UserDto {
 	}
 
 }
+```
 
 Modify User.java
 ----------------
+```java
 package com.authservice.entity;
 
 import jakarta.persistence.*;
@@ -852,14 +860,14 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
-	
-	
+		
 
 }
+```
 
 Modify AppSecurityConfig.java
 ---------------------------------
+```java
 package com.authservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -934,9 +942,11 @@ public class AppSecurityConfig {
 
 
 }
+```
 
 Modify CustomerUserDetailsService.java
 ---------------------------------------
+```java
 package com.authservice.service;
 
 import java.util.Collections;
@@ -965,10 +975,11 @@ public class CustomerUserDetailsService implements UserDetailsService{
 	}
 
 }
-
+```
 ---------------------------
 
-✅ 3. Test Using Postman or curl
+### ✅ 3. Test Using Postman or curl
+```html
 🔹 Test with Postman
 Choose GET and enter:
 http://localhost:8080/api/v1/admin/welcome
@@ -979,25 +990,27 @@ Username: admin
 Password: admin (assuming that's the encoded password in DB)
 
 Click Send.
-
+```
 You should get a 200 OK and the "Welcome, Admin!" message if the role is correctly configured.
 ----------------------------------------------------------------------------------------------------------------------
 
 ####################################################
-Implementing JWT Token
+### Implementing JWT Token
 ####################################################
 
 Download the dependency
 ------------------------
+```java
 <dependency>
     <groupId>com.auth0</groupId>
     <artifactId>java-jwt</artifactId>
     <version>4.4.0</version>
 </dependency>
-
+```
 
 Create JWTService class
 ---------------------------
+```java
 package com.authservice.jwt;
 
 import java.util.Date;
@@ -1027,10 +1040,11 @@ public class JwtService {
             .getSubject();
     }
 }
+```
 
 Modify AuthController  Class
 --------------------------------
-
+```java
 @Autowired
 private JwtService jwtService;
 
@@ -1061,10 +1075,10 @@ public ResponseEntity<APIResponse<String>> loginCheck(@RequestBody LoginDto logi
     response.setData("Unauthorized");
     return new ResponseEntity<>(response, HttpStatusCode.valueOf(response.getStatus()));
 }
-
+```
 Develop JWTFilter Class
 -----------------------------
-
+```java
 package com.authservice.jwt;
 
 import jakarta.servlet.FilterChain;
@@ -1114,10 +1128,10 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-
+```
 Modify Secuirty Config
 ---------------------------
-
+```java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -1194,3 +1208,8 @@ public class AppSecurityConfig {
 
 
 }
+```
+
+-------
+ Best Regards 
+## Jayant Samal
