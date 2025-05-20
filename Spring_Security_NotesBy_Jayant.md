@@ -994,6 +994,54 @@ Click Send.
 You should get a 200 OK and the "Welcome, Admin!" message if the role is correctly configured.
 ----------------------------------------------------------------------------------------------------------------------
 
+*Imnport Notes*
+############################
+Stateless: User details are not stored at the server side. Hence every every request we have to perform authentication
+
+Statefull: User details are  stored at the server side. Once the use perform login, Server will generate SessionId, One Copy of session will be kept at server side & another copy is given to the client, so that for subsequent request we can authenticate the user by sending seesionId with the request to server. When session Id matches you will get the respsone
+
+---------------------------------------------------------------------------------
+
+### Advantages of JWT Token
+#########################
+-> Stateless Communication
+-> This performs Authentication of subsequent request made post login was successful
+-> Highly Secured
+-> Set Expiry time for token
+-> Securing All Microservice can be made easy with JWT Token
+
+#### Architecture of JWT Token
+###############################
+Header.PayLoad.Signature
+
+Explanation of The Architecture
+
+What is header?
+Answer: ALGORITHM & TOKEN TYPE
+
+```
+Example:
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+```
+
+#### What is PayLoad?
+Answer:
+-> For which user token is generated (User Details)
+-> Who has generated this token (Issuer)
+-> Expiry Time Of Token?
+{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "iat": 1516239022
+}
+
+##### What is Signature?
+Answer: Secret key 
+
+
 ####################################################
 ### Implementing JWT Token
 ####################################################
